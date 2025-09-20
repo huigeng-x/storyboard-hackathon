@@ -8,6 +8,7 @@ venv/
 env/
 ENV/
 .venv
+CLAUDE.md
 
 # Environment variables
 .env
