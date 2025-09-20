@@ -1,0 +1,20 @@
+{
+  "id": "project_example_002",
+  "name": "How-to Demo - Setting up Email Automation",
+  "description": "Tutorial video showing users how to set up email automation workflows",
+  "requirements": {
+    "audience": "Marketing professionals and small business owners new to email automation",
+    "cta": "Start your free trial and automate your first email sequence today",
+    "duration": 240,
+    "type": 2,
+    "has_face": true,
+    "main_problem": "Business owners manually send repetitive emails and miss follow-up opportunities, losing potential customers",
+    "type2_requirements": {
+      "core_interaction_steps": "1. Navigate to Automation tab 2. Click 'Create New Workflow' 3. Choose trigger (new subscriber) 4. Add welcome email template 5. Set delay timing 6. Add follow-up emails 7. Test the sequence 8. Activate automation",
+      "where_people_make_mistakes": "Users often forget to test their automation before activating, leading to broken sequences. They also commonly set delays too short or too long, and forget to segment their audience properly."
+    }
+  },
+  "stories": ["story_example_002"],
+  "created_at": "2024-01-20T11:00:00Z",
+  "updated_at": "2024-01-20T16:15:00Z"
+}

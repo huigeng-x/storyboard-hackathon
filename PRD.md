@@ -1,4 +1,7 @@
-# AI Storyboard Generator - Product Overview
+# AI Storyboard Generator - Product Overview 
+
+## Name of the Product
+Plotline
 
 ## Product Vision
 
