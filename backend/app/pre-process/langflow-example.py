@@ -2,13 +2,13 @@ import requests
 import os
 
 # API Configuration
-url = "http://localhost:7860/api/v1/run/d4064e94-7321-4b23-bdef-532fd2be559a"  # The complete API endpoint URL for this flow
+url = "http://localhost:7860/api/v1/run/32b9d163-b971-4ee2-a280-1ffa05a79304"
 
-# Request payload configuration
+# Request payload configuration 
 payload = {
     "output_type": "chat",
     "input_type": "chat",
-    "input_value": "What is the job that we will need?"
+    "input_value": "What is the company name?"
 }
 
 # Request headers - no API key needed for local instance
