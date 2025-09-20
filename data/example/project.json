@@ -1,0 +1,21 @@
+{
+  "id": "project_example_001",
+  "name": "Product Release Video - AI Assistant Launch",
+  "description": "Storyboard for launching our new AI assistant feature",
+  "requirements": {
+    "audience": "Small business owners and entrepreneurs who struggle with content creation",
+    "cta": "Sign up for our free trial and create your first AI-powered video today",
+    "duration": 180,
+    "type": 1,
+    "has_face": false,
+    "main_problem": "Small business owners spend too much time creating marketing content instead of focusing on their core business",
+    "type1_requirements": {
+      "key_features": "AI-powered video creation, automated script generation, professional templates, brand-consistent styling",
+      "typical_use_cases": "Product announcements, social media content, customer onboarding, team training videos",
+      "core_interaction_steps": "1. Upload brand assets 2. Describe your video goals 3. AI generates script and storyboard 4. Customize and refine 5. Export professional video"
+    }
+  },
+  "stories": ["story_example_001"],
+  "created_at": "2024-01-20T10:00:00Z",
+  "updated_at": "2024-01-20T15:30:00Z"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "project_example_003",
+  "name": "Success Story - How TechCorp Increased Sales by 300%",
+  "description": "Knowledge sharing video about a customer success story",
+  "requirements": {
+    "audience": "SaaS founders and sales teams looking to improve their conversion rates",
+    "cta": "Download our free conversion optimization playbook used by TechCorp",
+    "duration": 300,
+    "type": 3,
+    "has_face": false,
+    "main_problem": "SaaS companies struggle with low conversion rates and don't know which strategies actually work to increase sales",
+    "type3_requirements": {
+      "success_story": "TechCorp, a mid-size B2B SaaS company, increased their sales by 300% in 6 months by implementing our proven conversion optimization framework. They went from 50 to 200 new customers per month while reducing their customer acquisition cost by 40%.",
+      "key_learnings": "1. Focus on product-qualified leads instead of marketing-qualified leads 2. Implement progressive onboarding with value demonstration at each step 3. Use behavioral triggers for sales outreach timing 4. Create specific landing pages for each customer segment 5. A/B test pricing presentation methods",
+      "target_outcomes": "Viewers will understand how to identify their highest-value prospects, implement behavioral triggers for better sales timing, and create segment-specific conversion strategies that can dramatically improve their sales results"
+    }
+  },
+  "stories": ["story_example_003"],
+  "created_at": "2024-01-20T12:00:00Z",
+  "updated_at": "2024-01-20T17:45:00Z"
+}
