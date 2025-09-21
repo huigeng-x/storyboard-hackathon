@@ -33,7 +33,7 @@ class StoryboardChatbot:
 
     def generate_response(self, user_message: str, conversation_history: List[ChatMessage] = None) -> str:
         """Generate AI response for storyboard editing assistance using Langflow"""
-
+        print("!!!!!")
         # Build context from conversation history
         context = ""
         if conversation_history:
@@ -51,7 +51,8 @@ class StoryboardChatbot:
         }
 
         try:
-            response = requests.post(self.url, json=payload, headers=self.headers, timeout=30)
+            # Increase timeout to 6 minutes for Langflow processing
+            response = requests.post(self.url, json=payload, headers=self.headers, timeout=360)
             response.raise_for_status()  # Raise exception for bad status codes
 
             # Parse Langflow response

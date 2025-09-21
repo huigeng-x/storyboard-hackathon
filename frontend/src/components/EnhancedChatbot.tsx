@@ -14,17 +14,41 @@ interface EnhancedChatbotProps {
 
 const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
   const scrollAreaRef = useRef<HTMLDivElement>(null);
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      id: "welcome",
-      role: "assistant",
-      content:
-        "Hi! I'm your AI assistant powered by OpenAI for storyboard editing and iteration. I can help you refine your storyboard panels, adjust scenes, modify dialogue, and make your video more engaging. What would you like to work on?",
-      createdAt: new Date(),
-    },
-  ]);
+  const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  // Initialize messages with the first user input from onboarding
+  useEffect(() => {
+    const storyboardPrompt = sessionStorage.getItem("storyboardPrompt");
+    const storyboardType = sessionStorage.getItem("storyboardType");
+    const initialResponse = sessionStorage.getItem("initialResponse");
+
+    if (storyboardPrompt && storyboardType) {
+      const storyboardTypeNames = ["", "Product Release Video", "How-to Video", "Knowledge Sharing"];
+      const typeName = storyboardTypeNames[parseInt(storyboardType)] || "Storyboard";
+
+      const initialMessages: Message[] = [
+        {
+          id: "initial-user",
+          role: "user",
+          content: `[${typeName}] ${storyboardPrompt}`,
+          createdAt: new Date(),
+        }
+      ];
+
+      if (initialResponse) {
+        initialMessages.push({
+          id: "initial-response",
+          role: "assistant",
+          content: initialResponse,
+          createdAt: new Date(),
+        });
+      }
+
+      setMessages(initialMessages);
+    }
+  }, []);
 
   const scrollToBottom = () => {
     if (scrollAreaRef.current) {
@@ -62,7 +86,10 @@ const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
     setIsLoading(true);
 
     try {
-      // Call backend API
+      // Call backend API with extended timeout for Langflow processing
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 380000); // 6 minutes 20 seconds
+
       const response = await fetch("http://localhost:8001/api/chat", {
         method: "POST",
         headers: {
@@ -75,7 +102,10 @@ const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
             content: msg.content,
           })),
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error("Failed to get response from AI");
@@ -130,7 +160,10 @@ const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
     setIsLoading(true);
 
     try {
-      // Call backend API
+      // Call backend API with extended timeout for Langflow processing
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 380000); // 6 minutes 20 seconds
+
       const response = await fetch("http://localhost:8001/api/chat", {
         method: "POST",
         headers: {
@@ -143,7 +176,10 @@ const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
             content: msg.content,
           })),
         }),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error("Failed to get response from AI");
@@ -215,7 +251,12 @@ const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
                 <div className="bg-muted text-muted-foreground rounded-lg p-3 text-sm">
                   <div className="flex items-center space-x-2">
                     <Loader2 className="w-4 h-4 animate-spin" />
-                    <span>Thinking...</span>
+                    <div>
+                      <span>Generating your storyboard...</span>
+                      <p className="text-xs opacity-70 mt-1">
+                        This may take 3-5 minutes. Please be patient.
+                      </p>
+                    </div>
                   </div>
                 </div>
               </div>
