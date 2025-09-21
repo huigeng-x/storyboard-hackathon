@@ -102,7 +102,7 @@ const OnboardingPage: React.FC = () => {
       await createProjectFolder(projectId, selectedType.id, userInput);
 
       // Format input for Langflow
-      const promptWithType = `Generate a 60 seconds storyboard with the category type [${selectedType.title}]. Here is the user input ${userInput}`;
+      const promptWithType = ` ${userInput} with the category type [${selectedType.title}. Return without confirm needed] `;
       console.log("Prompt sent to chat API:", promptWithType);
       // Call the chat API to kick off the Langflow flow with extended timeout
       const controller = new AbortController();
