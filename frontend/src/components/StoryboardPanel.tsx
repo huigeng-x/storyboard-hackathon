@@ -101,17 +101,14 @@ const StoryboardPanel: React.FC<StoryboardPanelProps> = ({
         {/* Panel Metadata - Right Side */}
         <div className="flex-1 space-y-3">
           <div>
-            <h3 className="font-semibold text-base text-foreground mb-2">
-              {panel.title}
-            </h3>
-            <p className="text-sm text-muted-foreground leading-relaxed">
+            <h3 className="font-semibold text-base text-foreground mb-2 text-left">
               {panel.description}
-            </p>
+            </h3>
           </div>
 
           {panel.notes && (
             <div className="pt-2 border-t border-border">
-              <p className="text-sm text-blue-600 italic">
+              <p className="text-sm text-blue-600 italic text-left">
                 <span className="font-medium">Note:</span> {panel.notes}
               </p>
             </div>

@@ -6,6 +6,8 @@ from pathlib import Path
 from pydantic import BaseModel
 from typing import List, Optional
 
+from app.utils.image_search import search_image
+
 class ChatMessage(BaseModel):
     role: str
     content: str
@@ -168,6 +170,7 @@ class StoryboardChatbot:
             story_id = f"{timestamp + i}"
             story_filename = f"story_{story_id}"
             story_file = project_dir / f"{story_filename}.json"
+            story_data["image_url"] = search_image(story_data.get("on_screen_visual_keywords", ""))
 
             # Save individual story file
             with open(story_file, "w") as f:

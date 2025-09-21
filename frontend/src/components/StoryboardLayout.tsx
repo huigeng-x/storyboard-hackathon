@@ -15,6 +15,7 @@ interface Story {
   action_notes?: string;
   screen_number?: number;
   on_screen_visual_keywords?: string;
+  image_url?: string;
   [key: string]: any;
 }
 

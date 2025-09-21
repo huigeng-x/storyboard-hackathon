@@ -14,6 +14,7 @@ interface Story {
   action_notes?: string;
   screen_number?: number;
   on_screen_visual_keywords?: string;
+  image_url?: string;
   [key: string]: any;
 }
 
@@ -206,8 +207,8 @@ const StoryboardEditor: React.FC<StoryboardEditorProps> = ({
       type: mapType(story.screen_type || story.Type),
       duration: Number(story.target_duration_sec || story.Duration || story.duration) || 10,
       imageUrl:
-        story.ImageUrl ||
         story.image_url ||
+        story.ImageUrl ||
         "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
       notes: story.action_notes || story.Notes || story.notes || "",
     }));

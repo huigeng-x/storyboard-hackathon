@@ -102,8 +102,8 @@ const OnboardingPage: React.FC = () => {
       await createProjectFolder(projectId, selectedType.id, userInput);
 
       // Format input for Langflow
-      const promptWithType = `[${selectedType.title}] ${userInput}`;
-
+      const promptWithType = `Generate a 60 seconds storyboard with the category type [${selectedType.title}]. Here is the user input ${userInput}`;
+      console.log("Prompt sent to chat API:", promptWithType);
       // Call the chat API to kick off the Langflow flow with extended timeout
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 380000); // 6 minutes 20 seconds
@@ -214,8 +214,9 @@ const OnboardingPage: React.FC = () => {
                 </p>
                 <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 mb-4">
                   <p className="text-sm text-amber-800">
-                    ⏱️ <strong>Please note:</strong> Storyboard generation typically takes 3-5 minutes.
-                    We appreciate your patience while our AI creates your personalized content.
+                    ⏱️ <strong>Please note:</strong> Storyboard generation
+                    typically takes 3-5 minutes. We appreciate your patience
+                    while our AI creates your personalized content.
                   </p>
                 </div>
               </div>

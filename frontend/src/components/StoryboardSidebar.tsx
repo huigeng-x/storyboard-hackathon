@@ -85,7 +85,7 @@ const StoryboardSidebar: React.FC<StoryboardSidebarProps> = ({
 
               {/* Panel Title */}
               <h4 className="text-sm font-medium text-foreground line-clamp-2 mb-1 text-left">
-                {panel.title}
+                {panel.description}
               </h4>
 
               {/* Progress Indicator */}
