@@ -108,14 +108,16 @@ const StoryboardLayout: React.FC = () => {
   return (
     // left side is the story editor and right side is the chatbot
     // add some padding between the soryboard editor and chatbot
-    <div className="h-screen w-full">
-      <div className="flex w-3/4 flex-col p-4 gap-6 overflow-hidden">
-        <StoryboardHeader projectData={projectData} />
-        <div className="flex">
+    <div className="h-screen w-full flex overflow-hidden">
+      <div className="flex w-3/4 flex-col h-full overflow-hidden">
+        <div className="flex-shrink-0 bg-background border-b border-border p-4">
+          <StoryboardHeader projectData={projectData} />
+        </div>
+        <div className="flex flex-1 min-h-0 pt-4 px-4 overflow-hidden">
           <StoryboardEditor className="h-full" stories={stories} />
         </div>
       </div>
-      <div className="h-full">
+      <div className="w-1/4 h-full">
         <EnhancedChatbot />
       </div>
     </div>
