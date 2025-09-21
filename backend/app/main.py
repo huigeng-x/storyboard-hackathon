@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.services.chatbot import StoryboardChatbot, ChatRequest, ChatResponse
+from app.utils.image_search import GoogleImageSearch
 from pydantic import BaseModel
 from typing import List, Optional
 import json
@@ -217,3 +218,68 @@ async def get_chat_history(project_id: str):
 
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error loading chat history: {str(e)}")
+
+class ImageSearchRequest(BaseModel):
+    query: str
+    num_results: Optional[int] = 5
+    image_size: Optional[str] = None
+    image_type: Optional[str] = None
+    safe_search: Optional[str] = "medium"
+
+@app.post("/api/search/images")
+async def search_images(request: ImageSearchRequest):
+    """Search for images using Google Custom Search API"""
+    try:
+        if not request.query.strip():
+            raise HTTPException(status_code=400, detail="Query cannot be empty")
+
+        searcher = GoogleImageSearch()
+        results = searcher.search_images(
+            query=request.query,
+            num_results=request.num_results,
+            image_size=request.image_size,
+            image_type=request.image_type,
+            safe_search=request.safe_search
+        )
+
+        return {
+            "success": True,
+            "query": request.query,
+            "count": len(results),
+            "images": results
+        }
+
+    except ValueError as e:
+        # Missing API keys
+        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error searching images: {str(e)}")
+
+@app.get("/api/search/image")
+async def get_first_image(query: str, image_type: Optional[str] = None):
+    """Get the first image result for a query"""
+    try:
+        if not query.strip():
+            raise HTTPException(status_code=400, detail="Query cannot be empty")
+
+        searcher = GoogleImageSearch()
+        result = searcher.get_first_image(query, image_type=image_type)
+
+        if result:
+            return {
+                "success": True,
+                "query": query,
+                "image": result
+            }
+        else:
+            return {
+                "success": False,
+                "query": query,
+                "message": "No images found"
+            }
+
+    except ValueError as e:
+        # Missing API keys
+        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error searching image: {str(e)}")
