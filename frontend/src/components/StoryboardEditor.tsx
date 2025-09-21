@@ -2,7 +2,10 @@ import React, { useState, useRef } from "react";
 import { cn } from "@/lib/utils";
 import { type StoryboardPanelType } from "@/components/StoryboardPanel";
 import StoryboardSidebar from "@/components/StoryboardSidebar";
-import StoryboardMainContent, { type StoryboardMainContentRef } from "@/components/StoryboardMainContent";
+import StoryboardMainContent, {
+  type StoryboardMainContentRef,
+} from "@/components/StoryboardMainContent";
+import StoryboardLoadingState from "@/components/StoryboardLoadingState";
 
 interface Story {
   screen_name?: string;
@@ -22,141 +25,6 @@ interface StoryboardEditorProps {
   className?: string;
   stories?: Story[];
 }
-
-const mockStoryboard: StoryboardPanelType[] = [
-  {
-    id: "1",
-    title: "Hook - Problem Introduction",
-    description:
-      "We get it, creating how-to videos takes hours of filming, screen recording, and editing time you could spend on other content and strategies.",
-    type: "stock-video",
-    duration: 8,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Use engaging visuals of frustrated content creators",
-  },
-  {
-    id: "2",
-    title: "Solution Introduction",
-    description:
-      "With our AI tool, you can create professional tutorials in minutes.",
-    type: "talking-head",
-    duration: 6,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Enthusiastic presenter introduction",
-  },
-  {
-    id: "3",
-    title: "Feature Demo - Script Creation",
-    description:
-      "Let me show you how. First, let's start with your script. Our AI script generator makes it easy...",
-    type: "screencast",
-    duration: 15,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Screen recording of script creation process",
-  },
-  {
-    id: "4",
-    title: "Feature Demo - Visual Selection",
-    description:
-      "Next, choose your visuals. Our AI selects the perfect stock footage and images for your content.",
-    type: "screencast",
-    duration: 12,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Show visual selection interface",
-  },
-  {
-    id: "5",
-    title: "Feature Demo - Voice & Music",
-    description:
-      "Add professional voiceover and background music with just a few clicks.",
-    type: "talking-head",
-    duration: 10,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Demonstrate audio features",
-  },
-  {
-    id: "6",
-    title: "Call to Action",
-    description:
-      "Ready to transform your content creation? Start your free trial today and create your first video in minutes.",
-    type: "cta",
-    duration: 7,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Strong CTA with signup button and demo link",
-  },
-  {
-    id: "7",
-    title: "Hook - Problem Introduction",
-    description:
-      "We get it, creating how-to videos takes hours of filming, screen recording, and editing time you could spend on other content and strategies.",
-    type: "stock-video",
-    duration: 8,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Use engaging visuals of frustrated content creators",
-  },
-  {
-    id: "8",
-    title: "Solution Introduction",
-    description:
-      "With our AI tool, you can create professional tutorials in minutes.",
-    type: "talking-head",
-    duration: 6,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Enthusiastic presenter introduction",
-  },
-  {
-    id: "9",
-    title: "Feature Demo - Script Creation",
-    description:
-      "Let me show you how. First, let's start with your script. Our AI script generator makes it easy...",
-    type: "screencast",
-    duration: 15,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Screen recording of script creation process",
-  },
-  {
-    id: "10",
-    title: "Feature Demo - Visual Selection",
-    description:
-      "Next, choose your visuals. Our AI selects the perfect stock footage and images for your content.",
-    type: "screencast",
-    duration: 12,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Show visual selection interface",
-  },
-  {
-    id: "11",
-    title: "Feature Demo - Voice & Music",
-    description:
-      "Add professional voiceover and background music with just a few clicks.",
-    type: "talking-head",
-    duration: 10,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Demonstrate audio features",
-  },
-  {
-    id: "12",
-    title: "Call to Action",
-    description:
-      "Ready to transform your content creation? Start your free trial today and create your first video in minutes.",
-    type: "cta",
-    duration: 7,
-    imageUrl:
-      "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    notes: "Strong CTA with signup button and demo link",
-  },
-];
 
 const StoryboardEditor: React.FC<StoryboardEditorProps> = ({
   className,
@@ -203,9 +71,14 @@ const StoryboardEditor: React.FC<StoryboardEditorProps> = ({
       id: story.screen_name || (index + 1).toString(),
       title: story.screen_name || story.Screen_title || `Panel ${index + 1}`,
       description:
-        story.voiceover_text || story.Description || story.description || "No description available",
+        story.voiceover_text ||
+        story.Description ||
+        story.description ||
+        "No description available",
       type: mapType(story.screen_type || story.Type),
-      duration: Number(story.target_duration_sec || story.Duration || story.duration) || 10,
+      duration:
+        Number(story.target_duration_sec || story.Duration || story.duration) ||
+        10,
       imageUrl:
         story.image_url ||
         story.ImageUrl ||
@@ -216,7 +89,7 @@ const StoryboardEditor: React.FC<StoryboardEditorProps> = ({
 
   // Use converted stories if available, otherwise fall back to mock data
   const displayPanels =
-    stories.length > 0 ? convertStoriesToPanels(stories) : mockStoryboard;
+    stories.length > 0 ? convertStoriesToPanels(stories) : [];
 
   // Handle panel selection from sidebar
   const handlePanelSelect = (panelId: string) => {
@@ -229,6 +102,11 @@ const StoryboardEditor: React.FC<StoryboardEditorProps> = ({
       mainContentRef.current.scrollToPanel(panelId);
     }
   };
+
+  // Show loading state when no stories are available
+  if (stories.length === 0) {
+    return <StoryboardLoadingState className={className} />;
+  }
 
   return (
     <div
