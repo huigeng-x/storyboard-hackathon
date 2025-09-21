@@ -1,0 +1,8 @@
+{
+  "screen_number": 14,
+  "voiceover_text": "Enable RCS with zero code changes\u2014no new APIs or SDKs required if you\u2019re already using Twilio\u2019s Programmable Messaging API.",
+  "target_duration_sec": 9,
+  "screen_type": "screencast",
+  "on_screen_visual_keywords": "Twilio Console UI, toggle RCS on, no code editor",
+  "action_notes": "Screen recording, highlight 'Enable RCS' button"
+}
