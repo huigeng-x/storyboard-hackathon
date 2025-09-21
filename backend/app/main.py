@@ -2,6 +2,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from app.services.chatbot import StoryboardChatbot, ChatRequest, ChatResponse
 from app.utils.image_search import GoogleImageSearch
+from app.utils.json_extractor import extract_json_from_text, convert_to_story_format
 from pydantic import BaseModel
 from typing import List, Optional
 import json
@@ -283,3 +284,91 @@ async def get_first_image(query: str, image_type: Optional[str] = None):
         raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Error searching image: {str(e)}")
+
+
+class JSONExtractionRequest(BaseModel):
+    text: str
+    validate: Optional[bool] = True
+    convert_to_stories: Optional[bool] = True
+
+
+@app.post("/api/extract-json")
+async def extract_json_from_ai_output(request: JSONExtractionRequest):
+    """Extract JSON data from AI output text"""
+    try:
+        if not request.text.strip():
+            raise HTTPException(status_code=400, detail="Text cannot be empty")
+
+        # Extract JSON from the text
+        result = extract_json_from_text(request.text, validate=request.validate)
+
+        if not result.success:
+            return {
+                "success": False,
+                "error": result.error,
+                "raw_json_strings": result.raw_json_strings
+            }
+
+        response_data = {
+            "success": True,
+            "data": result.data,
+            "validated_data": [screen.model_dump() for screen in result.validated_data] if result.validated_data else None,
+            "raw_json_strings": result.raw_json_strings
+        }
+
+        # Convert to story format if requested
+        if request.convert_to_stories and result.validated_data:
+            stories = convert_to_story_format(result.validated_data)
+            response_data["stories"] = stories
+
+        return response_data
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error extracting JSON: {str(e)}")
+
+
+class SaveStoriesRequest(BaseModel):
+    project_id: str
+    stories: List[dict]
+
+
+@app.post("/api/project/{project_id}/save-stories")
+async def save_stories_to_project(project_id: str, request: SaveStoriesRequest):
+    """Save extracted stories to a project"""
+    try:
+        # Find project directory
+        project_dir = Path(__file__).parent.parent.parent / "data" / f"project_{project_id}"
+        if not project_dir.exists():
+            raise HTTPException(status_code=404, detail="Project not found")
+
+        # Save stories to individual files
+        story_files = []
+        for i, story in enumerate(request.stories):
+            story_filename = f"story_{i+1}"
+            story_file = project_dir / f"{story_filename}.json"
+
+            with open(story_file, "w") as f:
+                json.dump(story, f, indent=2)
+
+            story_files.append(story_filename)
+
+        # Update project file with story references
+        project_files = list(project_dir.glob("project_type*.json"))
+        if project_files:
+            with open(project_files[0], "r") as f:
+                project_data = json.load(f)
+
+            project_data["stories"] = story_files
+            project_data["lastUpdated"] = datetime.now().isoformat()
+
+            with open(project_files[0], "w") as f:
+                json.dump(project_data, f, indent=2)
+
+        return {
+            "success": True,
+            "message": f"Saved {len(request.stories)} stories to project",
+            "story_files": story_files
+        }
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error saving stories: {str(e)}")

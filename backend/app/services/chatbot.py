@@ -23,7 +23,7 @@ class StoryboardChatbot:
 
         # Langflow configuration - make URL and flow ID configurable
         langflow_host = os.getenv("LANGFLOW_HOST", "localhost:7860")
-        flow_id = os.getenv("LANGFLOW_FLOW_ID", "d4064e94-7321-4b23-bdef-532fd2be559a")
+        flow_id = os.getenv("LANGFLOW_FLOW_ID", "6bc20709-5eac-463b-b5e7-28388dd6e560")
         self.url = f"http://{langflow_host}/api/v1/run/{flow_id}"
 
         self.headers = {
