@@ -113,43 +113,15 @@ const getTypeLabel = (type: StoryboardPanel["type"]) => {
 const StoryboardEditor: React.FC<StoryboardEditorProps> = ({ className }) => {
   const [selectedPanel, setSelectedPanel] = useState<string | null>(null);
 
-  const totalDuration = mockStoryboard.reduce(
-    (sum, panel) => sum + panel.duration,
-    0
-  );
-
   return (
-    <div className={cn("flex-1 p-6 bg-background", className)}>
-      {/* Header */}
-      <div className="mb-6">
-        <div className="flex items-center justify-between mb-2">
-          <h1 className="text-2xl font-bold text-foreground">
-            How-to Demo: AI Video Creation Tool
-          </h1>
-          <div className="flex items-center space-x-4">
-            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-              <Clock className="w-4 h-4" />
-              <span>Total: {totalDuration}s</span>
-            </div>
-            <Button variant="outline" size="sm">
-              <Play className="w-4 h-4 mr-2" />
-              Preview
-            </Button>
-          </div>
-        </div>
-        <p className="text-muted-foreground">
-          Edit your storyboard panels below. Use the chat assistant to make
-          changes and improvements.
-        </p>
-      </div>
-
+    <div className={cn("flex flex-col h-full p-4 bg-background overflow-auto", className)}>
       {/* Storyboard Grid */}
-      <div className="grid grid-cols-3 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-4 flex-1">
         {mockStoryboard.map((panel, index) => (
           <Card
             key={panel.id}
             className={cn(
-              "p-4 cursor-pointer transition-all hover:shadow-md",
+              "p-3 cursor-pointer transition-all hover:shadow-md h-fit",
               selectedPanel === panel.id && "ring-2 ring-primary"
             )}
             onClick={() => setSelectedPanel(panel.id)}
