@@ -116,6 +116,7 @@ const OnboardingPage: React.FC = () => {
         body: JSON.stringify({
           message: promptWithType,
           conversation_history: [],
+          project_id: projectId,
         }),
         signal: controller.signal,
       });
@@ -134,8 +135,8 @@ const OnboardingPage: React.FC = () => {
       sessionStorage.setItem("storyboardPrompt", userInput);
       sessionStorage.setItem("initialResponse", data.message);
 
-      // Navigate to storyboard layout
-      navigate("/storyboard");
+      // Navigate to storyboard layout with project ID
+      navigate(`/storyboard/${projectId}`);
     } catch (error) {
       console.error("Error generating storyboard:", error);
       alert("Failed to generate storyboard. Please try again.");

@@ -17,37 +17,78 @@ const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [projectId, setProjectId] = useState<string | null>(null);
 
-  // Initialize messages with the first user input from onboarding
+  // Load chat history from backend when component mounts
   useEffect(() => {
-    const storyboardPrompt = sessionStorage.getItem("storyboardPrompt");
-    const storyboardType = sessionStorage.getItem("storyboardType");
-    const initialResponse = sessionStorage.getItem("initialResponse");
+    const loadChatHistory = async () => {
+      const currentProjectId = sessionStorage.getItem("projectId");
+      if (!currentProjectId) return;
 
-    if (storyboardPrompt && storyboardType) {
-      const storyboardTypeNames = ["", "Product Release Video", "How-to Video", "Knowledge Sharing"];
-      const typeName = storyboardTypeNames[parseInt(storyboardType)] || "Storyboard";
+      setProjectId(currentProjectId);
 
-      const initialMessages: Message[] = [
-        {
-          id: "initial-user",
-          role: "user",
-          content: `[${typeName}] ${storyboardPrompt}`,
-          createdAt: new Date(),
+      try {
+        // Load chat history from backend
+        const response = await fetch(`http://localhost:8001/api/chat/history/${currentProjectId}`);
+
+        if (response.ok) {
+          const data = await response.json();
+
+          if (data.messages && data.messages.length > 0) {
+            // Convert stored messages to Message format
+            const loadedMessages: Message[] = data.messages.map((msg: any) => ({
+              id: msg.id,
+              role: msg.role,
+              content: msg.content,
+              createdAt: new Date(msg.createdAt),
+            }));
+            setMessages(loadedMessages);
+          } else {
+            // If no history exists, initialize with onboarding data
+            loadInitialMessages();
+          }
+        } else {
+          // If error loading history, fall back to initial messages
+          loadInitialMessages();
         }
-      ];
-
-      if (initialResponse) {
-        initialMessages.push({
-          id: "initial-response",
-          role: "assistant",
-          content: initialResponse,
-          createdAt: new Date(),
-        });
+      } catch (error) {
+        console.error("Error loading chat history:", error);
+        loadInitialMessages();
       }
+    };
 
-      setMessages(initialMessages);
-    }
+    const loadInitialMessages = () => {
+      const storyboardPrompt = sessionStorage.getItem("storyboardPrompt");
+      const storyboardType = sessionStorage.getItem("storyboardType");
+      const initialResponse = sessionStorage.getItem("initialResponse");
+
+      if (storyboardPrompt && storyboardType) {
+        const storyboardTypeNames = ["", "Product Release Video", "How-to Video", "Knowledge Sharing"];
+        const typeName = storyboardTypeNames[parseInt(storyboardType)] || "Storyboard";
+
+        const initialMessages: Message[] = [
+          {
+            id: "initial-user",
+            role: "user",
+            content: `[${typeName}] ${storyboardPrompt}`,
+            createdAt: new Date(),
+          }
+        ];
+
+        if (initialResponse) {
+          initialMessages.push({
+            id: "initial-response",
+            role: "assistant",
+            content: initialResponse,
+            createdAt: new Date(),
+          });
+        }
+
+        setMessages(initialMessages);
+      }
+    };
+
+    loadChatHistory();
   }, []);
 
   const scrollToBottom = () => {
@@ -60,6 +101,41 @@ const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
       }
     }
   };
+
+  // Save messages whenever they change (excluding initial load)
+  useEffect(() => {
+    const saveChatHistory = async () => {
+      if (!projectId || messages.length === 0) return;
+
+      try {
+        const response = await fetch("http://localhost:8001/api/chat/save", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            projectId,
+            messages: messages.map((msg) => ({
+              id: msg.id,
+              role: msg.role,
+              content: msg.content,
+              createdAt: msg.createdAt ? msg.createdAt.toISOString() : new Date().toISOString(),
+            })),
+          }),
+        });
+
+        if (!response.ok) {
+          console.error("Failed to save chat history");
+        }
+      } catch (error) {
+        console.error("Error saving chat history:", error);
+      }
+    };
+
+    // Debounce saving to avoid too many requests
+    const timeoutId = setTimeout(saveChatHistory, 1000);
+    return () => clearTimeout(timeoutId);
+  }, [messages, projectId]);
 
   useEffect(() => {
     scrollToBottom();
@@ -101,6 +177,7 @@ const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
             role: msg.role,
             content: msg.content,
           })),
+          project_id: projectId,
         }),
         signal: controller.signal,
       });
@@ -175,6 +252,7 @@ const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
             role: msg.role,
             content: msg.content,
           })),
+          project_id: projectId,
         }),
         signal: controller.signal,
       });

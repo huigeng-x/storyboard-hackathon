@@ -31,7 +31,7 @@ class StoryboardChatbot:
             "x-api-key": self.api_key
         }
 
-    def generate_response(self, user_message: str, conversation_history: List[ChatMessage] = None) -> str:
+    def generate_response(self, user_message: str, conversation_history: List[ChatMessage] = None, project_id: str = None) -> str:
         """Generate AI response for storyboard editing assistance using Langflow"""
         print("!!!!!")
         # Build context from conversation history

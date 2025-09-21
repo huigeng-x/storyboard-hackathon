@@ -9,7 +9,7 @@ function App() {
       <Routes>
         <Route path="/" element={<OnboardingPage />} />
         <Route path="/onboarding" element={<OnboardingPage />} />
-        <Route path="/storyboard" element={<StoryboardLayout />} />
+        <Route path="/storyboard/:projectId" element={<StoryboardLayout />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </Router>
