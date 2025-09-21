@@ -2,8 +2,9 @@ import React from "react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Play, Clock, Edit, Plus } from "lucide-react";
+import { Clock, Edit } from "lucide-react";
 import { cn } from "@/lib/utils";
+import StoryboardImage from "@/components/StoryboardImage";
 
 export interface StoryboardPanelType {
   id: string;
@@ -53,68 +54,69 @@ const StoryboardPanel: React.FC<StoryboardPanelProps> = ({
   return (
     <Card
       className={cn(
-        "p-3 cursor-pointer transition-all hover:shadow-md h-fit",
+        "p-4 cursor-pointer transition-all hover:shadow-md w-full",
         isSelected && "ring-2 ring-primary"
       )}
       onClick={() => onSelect(panel.id)}
     >
       {/* Panel Header */}
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex items-center space-x-2">
-          <span className="text-sm font-medium text-muted-foreground">
+      <div className="flex items-center justify-between mb-4 pb-3 border-b border-border">
+        <div className="flex items-center space-x-3">
+          <span className="text-lg font-semibold text-foreground">
             Panel {index + 1}
           </span>
           <Badge className={cn("text-white", getTypeColor(panel.type))}>
             {getTypeLabel(panel.type)}
           </Badge>
-        </div>
-        <div className="flex items-center space-x-1 text-xs text-muted-foreground">
-          <Clock className="w-3 h-3" />
-          <span>{panel.duration}s</span>
-        </div>
-      </div>
-
-      {/* Panel Image */}
-      <div className="aspect-video bg-muted rounded-md mb-3 flex items-center justify-center overflow-hidden">
-        {panel.imageUrl ? (
-          <img
-            src={panel.imageUrl}
-            alt={`${panel.title} preview`}
-            className="object-cover w-full h-full"
-          />
-        ) : (
-          <div className="text-center text-muted-foreground">
-            <div className="w-12 h-12 bg-muted-foreground/20 rounded-lg mx-auto mb-2 flex items-center justify-center">
-              <Play className="w-6 h-6" />
-            </div>
-            <p className="text-xs">No Image Available</p>
+          <div className="flex items-center space-x-1 text-sm text-muted-foreground">
+            <Clock className="w-4 h-4" />
+            <span>{panel.duration}s</span>
           </div>
-        )}
+        </div>
+        {/* Additional Actions */}
+        <div className="flex items-center justify-end">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-xs"
+            onClick={(e) => {
+              e.stopPropagation();
+              // Add edit functionality here
+            }}
+          >
+            <Edit className="w-3 h-3 mr-1" />
+            Edit
+          </Button>
+        </div>
       </div>
 
-      {/* Panel Content */}
-      <div className="space-y-2">
-        <h3 className="font-medium text-sm line-clamp-2">{panel.title}</h3>
-        <p className="text-xs text-muted-foreground line-clamp-3">
-          {panel.description}
-        </p>
-        {panel.notes && (
-          <p className="text-xs text-blue-600 italic line-clamp-2">
-            Note: {panel.notes}
-          </p>
-        )}
-      </div>
+      {/* Panel Content - Image Left, Metadata Right */}
+      <div className="flex gap-6">
+        {/* Panel Image - Left Side */}
+        <StoryboardImage
+          imageUrl={panel.imageUrl}
+          alt={`${panel.title} preview`}
+        />
 
-      {/* Panel Actions */}
-      <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-        <Button variant="ghost" size="sm" className="h-6 text-xs">
-          <Edit className="w-3 h-3 mr-1" />
-          Edit
-        </Button>
-        <Button variant="ghost" size="sm" className="h-6 text-xs">
-          <Plus className="w-3 h-3 mr-1" />
-          Add After
-        </Button>
+        {/* Panel Metadata - Right Side */}
+        <div className="flex-1 space-y-3">
+          <div>
+            <h3 className="font-semibold text-base text-foreground mb-2">
+              {panel.title}
+            </h3>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              {panel.description}
+            </p>
+          </div>
+
+          {panel.notes && (
+            <div className="pt-2 border-t border-border">
+              <p className="text-sm text-blue-600 italic">
+                <span className="font-medium">Note:</span> {panel.notes}
+              </p>
+            </div>
+          )}
+        </div>
       </div>
     </Card>
   );

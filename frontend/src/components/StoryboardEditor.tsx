@@ -139,25 +139,27 @@ const StoryboardEditor: React.FC<StoryboardEditorProps> = ({ className, stories 
   return (
     <div
       className={cn(
-        "flex flex-col h-full p-4 bg-background overflow-auto",
+        "flex flex-col h-full bg-background",
         className
       )}
       onClick={() => setSelectedPanel(null)}
     >
-      {/* Storyboard Grid */}
-      <div
-        className="grid grid-cols-3 gap-4 flex-1"
-        onClick={(e) => e.stopPropagation()}
-      >
-        {displayPanels.map((panel, index) => (
-          <StoryboardPanel
-            key={panel.id}
-            panel={panel}
-            index={index}
-            isSelected={selectedPanel === panel.id}
-            onSelect={setSelectedPanel}
-          />
-        ))}
+      {/* Storyboard Vertical Feed */}
+      <div className="flex-1 overflow-auto">
+        <div
+          className="space-y-4 p-4 max-w-5xl mx-auto"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {displayPanels.map((panel, index) => (
+            <StoryboardPanel
+              key={panel.id}
+              panel={panel}
+              index={index}
+              isSelected={selectedPanel === panel.id}
+              onSelect={setSelectedPanel}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );
