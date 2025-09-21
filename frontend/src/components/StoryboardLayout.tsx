@@ -6,9 +6,15 @@ import StoryboardHeader from "@/components/StoryboardHeader";
 import { Loader2 } from "lucide-react";
 
 interface Story {
-  screen_name: string;
-  Screen_title: string;
-  Type: string;
+  screen_name?: string;
+  Screen_title?: string;
+  Type?: string;
+  voiceover_text?: string;
+  screen_type?: string;
+  target_duration_sec?: number;
+  action_notes?: string;
+  screen_number?: number;
+  on_screen_visual_keywords?: string;
   [key: string]: any;
 }
 

@@ -5,9 +5,15 @@ import StoryboardSidebar from "@/components/StoryboardSidebar";
 import StoryboardMainContent, { type StoryboardMainContentRef } from "@/components/StoryboardMainContent";
 
 interface Story {
-  screen_name: string;
-  Screen_title: string;
-  Type: string;
+  screen_name?: string;
+  Screen_title?: string;
+  Type?: string;
+  voiceover_text?: string;
+  screen_type?: string;
+  target_duration_sec?: number;
+  action_notes?: string;
+  screen_number?: number;
+  on_screen_visual_keywords?: string;
   [key: string]: any;
 }
 
@@ -160,7 +166,7 @@ const StoryboardEditor: React.FC<StoryboardEditorProps> = ({
 
   // Convert stories to StoryboardPanelType format
   const convertStoriesToPanels = (stories: Story[]): StoryboardPanelType[] => {
-    const mapType = (type: string): StoryboardPanelType["type"] => {
+    const mapType = (type: string | undefined): StoryboardPanelType["type"] => {
       const lowercaseType = type?.toLowerCase() || "";
       switch (lowercaseType) {
         case "stock-video":
@@ -194,16 +200,16 @@ const StoryboardEditor: React.FC<StoryboardEditorProps> = ({
 
     return stories.map((story, index) => ({
       id: story.screen_name || (index + 1).toString(),
-      title: story.Screen_title || `Panel ${index + 1}`,
+      title: story.screen_name || story.Screen_title || `Panel ${index + 1}`,
       description:
-        story.Description || story.description || "No description available",
-      type: mapType(story.Type),
-      duration: Number(story.Duration || story.duration) || 10,
+        story.voiceover_text || story.Description || story.description || "No description available",
+      type: mapType(story.screen_type || story.Type),
+      duration: Number(story.target_duration_sec || story.Duration || story.duration) || 10,
       imageUrl:
         story.ImageUrl ||
         story.image_url ||
         "https://plus.unsplash.com/premium_photo-1664474619075-644dd191935f?q=80&w=2338&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      notes: story.Notes || story.notes || "",
+      notes: story.action_notes || story.Notes || story.notes || "",
     }));
   };
 
