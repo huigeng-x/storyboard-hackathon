@@ -101,46 +101,62 @@ const OnboardingPage: React.FC = () => {
       // Create project folder structure
       await createProjectFolder(projectId, selectedType.id, userInput);
 
-      // Format input for Langflow
-      const promptWithType = ` ${userInput} with the category type ${selectedType.title}. Please don't user any placeholder, and search the web if you cannot find enough information. Return without confirm needed.`;
-      console.log("Prompt sent to chat API:", promptWithType);
-      // Call the chat API to kick off the Langflow flow with extended timeout
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 380000); // 6 minutes 20 seconds
-
-      const response = await fetch("http://localhost:8001/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          message: promptWithType,
-          conversation_history: [],
-          project_id: projectId,
-        }),
-        signal: controller.signal,
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) {
-        throw new Error("Failed to generate storyboard");
-      }
-
-      const data = await response.json();
-
-      // Store project context
+      // Store project context immediately
       sessionStorage.setItem("projectId", projectId);
       sessionStorage.setItem("storyboardType", selectedType.id.toString());
       sessionStorage.setItem("storyboardPrompt", userInput);
-      sessionStorage.setItem("initialResponse", data.message);
 
-      // Navigate to storyboard layout with project ID
+      // Navigate to storyboard layout immediately to show loading state
       navigate(`/storyboard/${projectId}`);
+
+      // Start AI generation in background (don't await)
+      const generateInBackground = async () => {
+        try {
+          // Format input for Langflow
+          const promptWithType = ` ${userInput} with the category type ${selectedType.title}. Please don't user any placeholder, and search the web if you cannot find enough information. Return without confirm needed.`;
+          console.log("Prompt sent to chat API:", promptWithType);
+
+          // Call the chat API to kick off the Langflow flow with extended timeout
+          const controller = new AbortController();
+          const timeoutId = setTimeout(() => controller.abort(), 380000); // 6 minutes 20 seconds
+
+          const response = await fetch("http://localhost:8001/api/chat", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              message: promptWithType,
+              conversation_history: [],
+              project_id: projectId,
+            }),
+            signal: controller.signal,
+          });
+
+          clearTimeout(timeoutId);
+
+          if (!response.ok) {
+            console.error("Failed to generate storyboard in background");
+            return;
+          }
+
+          const data = await response.json();
+
+          // Store the AI response
+          sessionStorage.setItem("initialResponse", data.message);
+          console.log("Background AI generation completed for project:", projectId);
+
+        } catch (error) {
+          console.error("Background AI generation failed:", error);
+        }
+      };
+
+      // Start background generation without blocking navigation
+      generateInBackground();
+
     } catch (error) {
-      console.error("Error generating storyboard:", error);
-      alert("Failed to generate storyboard. Please try again.");
-    } finally {
+      console.error("Error creating project:", error);
+      alert("Failed to create project. Please try again.");
       setIsGenerating(false);
     }
   };
