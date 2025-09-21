@@ -190,9 +190,11 @@ const EnhancedChatbot: React.FC<EnhancedChatbotProps> = ({ className }) => {
           <Bot className="w-5 h-5" />
           <h3 className="font-medium">Storyboard AI Assistant</h3>
         </div>
-        <p className="text-xs text-primary-foreground/80 mt-1">
-          Edit and iterate your storyboard
-        </p>
+        <div className="flex">
+          <p className="text-xs text-primary-foreground/80 mt-1">
+            Edit and iterate your storyboard
+          </p>
+        </div>
       </div>
 
       {/* Messages */}
